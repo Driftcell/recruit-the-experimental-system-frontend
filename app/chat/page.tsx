@@ -6,7 +6,7 @@
 import { faMagnifyingGlass, faUser } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { useEffect, useRef, useState } from 'react'
+import { Suspense, useEffect, useRef, useState } from 'react'
 import Markdown from 'react-markdown'
 import { io, Socket } from 'socket.io-client'
 import { v4 as uuidv4 } from 'uuid'
@@ -81,7 +81,7 @@ interface Message {
   content: string
 }
 
-export default function ChatPage() {
+function Chat() {
   const router = useRouter()
   const params = useSearchParams()
 
@@ -272,5 +272,13 @@ export default function ChatPage() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function ChatPage() {
+  return (
+    <Suspense>
+      <Chat />
+    </Suspense>
   )
 }
