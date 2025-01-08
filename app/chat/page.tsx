@@ -1,37 +1,41 @@
-"use client";
+'use client'
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @next/next/no-img-element */
 
-import { faMagnifyingGlass, faUser } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
-import Markdown from "react-markdown";
-import { io, Socket } from "socket.io-client";
-import { v4 as uuidv4 } from "uuid";
+import { faMagnifyingGlass, faUser } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { useEffect, useRef, useState } from 'react'
+import Markdown from 'react-markdown'
+import { io, Socket } from 'socket.io-client'
+import { v4 as uuidv4 } from 'uuid'
 
 interface ChatDialogProps {
-  message: string;
-  isUser: boolean;
-  isThinking?: boolean;
+  message: string
+  role: string
+  isThinking?: boolean
 }
 
-function ChatDialog({ message, isUser, isThinking = false }: ChatDialogProps) {
+function ChatDialog({ message, role, isThinking = false }: ChatDialogProps) {
   return (
-    <div className={`flex w-full ${isUser ? "justify-end" : "justify-start"}`}>
+    <div
+      className={`flex w-full ${
+        role === 'user' ? 'justify-end' : 'justify-start'
+      }`}
+    >
       <div>
         <div
           className={`flex items-center mb-2 ${
-            isUser ? "flex-row-reverse" : ""
+            role === 'user' ? 'flex-row-reverse' : ''
           }`}
         >
           <div
             className={`w-8 h-8 sm:w-12 sm:h-12 rounded-full flex items-center justify-center ${
-              isUser ? "bg-[#E9A79B]" : "border bg-white"
+              role === 'user' ? 'bg-[#E9A79B]' : 'border bg-white'
             }`}
           >
-            {isUser ? (
+            {role === 'user' ? (
               <FontAwesomeIcon
                 icon={faUser}
                 className="text-white sm:text-2xl"
@@ -47,20 +51,20 @@ function ChatDialog({ message, isUser, isThinking = false }: ChatDialogProps) {
             )}
           </div>
           <p className="text-gray-500 text-sm sm:text-xl mx-4">
-            {isUser ? "您" : "AI小智"}
+            {role === 'user' ? '您' : 'AI小智'}
           </p>
         </div>
 
         <div
           className={`px-4 min-h-10 whitespace-pre-wrap break-words py-2 sm:py-2.5 sm:px-5 rounded-3xl mx-8 ${
-            isUser
-              ? "rounded-tr-lg bg-[#FDE3D4]"
-              : "rounded-tl-lg bg-gray-50 border border-gray-200"
+            role === 'user'
+              ? 'rounded-tr-lg bg-[#FDE3D4]'
+              : 'rounded-tl-lg bg-gray-50 border border-gray-200'
           }`}
         >
           <Markdown
             className={`prose break-words prose-sm sm:prose-lg text-gray-800 ${
-              isThinking ? "is-thinking" : ""
+              isThinking ? 'is-thinking' : ''
             }`}
           >
             {message}
@@ -68,98 +72,103 @@ function ChatDialog({ message, isUser, isThinking = false }: ChatDialogProps) {
         </div>
       </div>
     </div>
-  );
+  )
+}
+
+interface Message {
+  id: string
+  role: string
+  content: string
 }
 
 export default function ChatPage() {
-  const router = useRouter();
-  const params = useSearchParams();
+  const router = useRouter()
+  const params = useSearchParams()
 
-  const [messages, setMessages] = useState([]);
-  const [chatId, setChatId] = useState("");
+  const [messages, setMessages] = useState<Message[]>([])
+  const [chatId, setChatId] = useState('')
 
-  const [input, setInput] = useState("");
-  const socketRef = useRef<Socket | null>(null);
+  const [input, setInput] = useState('')
+  const socketRef = useRef<Socket | null>(null)
 
-  const [isLoading, setIsLoading] = useState(false);
-  const [currentAnswer, setCurrentAnswer] = useState("");
+  const [isLoading, setIsLoading] = useState(false)
+  const [currentAnswer, setCurrentAnswer] = useState('')
 
   useEffect(() => {
-    if (!params.get("chatId")) {
+    if (!params.get('chatId')) {
       fetch(`${process.env.NEXT_PUBLIC_API_URL}/chat`, {
-        method: "POST",
+        method: 'POST',
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("user_token")}`,
+          Authorization: `Bearer ${localStorage.getItem('user_token')}`,
         },
       }).then(async (res) => {
         if (res.ok) {
-          const chat = await res.json();
-          router.replace(`/chat?chatId=${chat.id}`);
+          const chat = await res.json()
+          router.replace(`/chat?chatId=${chat.id}`)
         }
-      });
+      })
     } else {
-      setChatId(params.get("chatId"));
+      setChatId(params.get('chatId')!)
     }
-  }, [params, router]);
+  }, [params, router])
 
   useEffect(() => {
-    console.log(chatId);
     if (chatId) {
       fetch(`${process.env.NEXT_PUBLIC_API_URL}/chat/messages/${chatId}`, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("user_token")}`,
+          Authorization: `Bearer ${localStorage.getItem('user_token')}`,
         },
       })
         .then((res) => res.json())
         .then((data) => {
-          setMessages(data);
-        });
+          setMessages(data)
+        })
 
-      socketRef.current = io(`${process.env.NEXT_PUBLIC_API_URL}/chat`);
+      socketRef.current = io(`${process.env.NEXT_PUBLIC_API_URL}/chat`)
 
-      socketRef.current.on("connect", () => {
-        console.log("Connected to Socket.IO server");
-      });
+      socketRef.current.on('connect', () => {
+        console.log('Connected to Socket.IO server')
+      })
 
-      socketRef.current.on("error", (error) => {
-        setIsLoading(false);
-        setCurrentAnswer("");
-        console.error("Error in connection to Socket.IO:", error);
-      });
+      socketRef.current.on('error', (error) => {
+        setIsLoading(false)
+        setCurrentAnswer('')
+        console.error('Error in connection to Socket.IO:', error)
+      })
 
-      socketRef.current.on("chatUpdate", (message) => {
+      socketRef.current.on('chatUpdate', (message) => {
         setCurrentAnswer((prev) => {
-          console.log(prev);
-          return prev + message.data.delta;
-        });
-      });
+          return prev + message.data.delta
+        })
+      })
 
-      socketRef.current.on("chatComplete", () => {
-        setIsLoading(false);
+      socketRef.current.on('chatComplete', () => {
+        setIsLoading(false)
         setCurrentAnswer((prevAns) => {
           setMessages((prev) => [
             ...prev,
-            { id: uuidv4(), content: prevAns, role: "assistant" },
-          ]);
-          return "";
-        });
-      });
+            { id: uuidv4(), content: prevAns, role: 'assistant' },
+          ])
+          return ''
+        })
+      })
 
       return () => {
-        socketRef.current?.disconnect();
-      };
+        socketRef.current?.disconnect()
+      }
     }
-  }, [chatId]);
+  }, [chatId])
 
   function handleMessage() {
     if (!input || !socketRef.current) {
-      return;
+      return
     }
 
-    setMessages([...messages, { id: uuidv4(), role: "user", content: input }]);
+    setMessages([...messages, { id: uuidv4(), role: 'user', content: input }])
 
-    socketRef.current.emit("startChat", { chatId, message: input });
-    setInput("");
+    socketRef.current.emit('startChat', { chatId, message: input })
+    setIsLoading(true)
+    setInput('')
   }
 
   return (
@@ -200,9 +209,6 @@ export default function ChatPage() {
                 className="absolute top-[-5%] sm:top-[-20%] w-[25rem] z-[-1]"
               />
               嗨！我是小智🥰
-              <sup className="bg-red-500 text-white text-xs sm:text-sm font-semibold p-1 rounded">
-                内测中
-              </sup>
             </p>
           </div>
           <img
@@ -213,19 +219,24 @@ export default function ChatPage() {
         </div>
 
         <p className="text-gray-700 sm:text-lg indent-10 tracking-wide !leading-10 md:!leading-[3rem] lg:!leading-[4rem]">
-          作为你的专属智能健康助手，我可以回答你一切有关孕产期母婴健康的问题。
-          请放心，我们的对话将是私密的。
+          我们的所有会话都将保密，若出现严重情绪困扰，请及时就医。
         </p>
       </div>
 
       <div className="mx-10">
-        {messages.map((message) => (
-          <ChatDialog
-            isUser={message.role === "user"}
-            message={message.content}
-            key={message.id}
-          />
-        ))}
+        {messages
+          .filter((message) => message.role !== 'system')
+          .map((message) => (
+            <ChatDialog
+              role={message.role}
+              message={message.content}
+              key={message.id}
+            />
+          ))}
+
+        {isLoading && (
+          <ChatDialog role="assistant" message={currentAnswer} isThinking />
+        )}
       </div>
 
       <div className="relative mx-20 my-4 md:my-8 lg:my-16">
@@ -244,16 +255,22 @@ export default function ChatPage() {
             placeholder="请输入您的问题"
             className="flex-1 sm:h-12 px-4 mx-1 sm:mx-4 text-sm sm:text-base md:text-lg disabled:opacity-50"
             maxLength={100}
+            onKeyDown={(e) => {
+              if (e.code === 'Enter') {
+                handleMessage()
+              }
+            }}
           />
           <button
             onClick={handleMessage}
+            disabled={isLoading}
             className="rounded-full bg-[#E9A79B] py-2 px-4 sm:px-6 md:px-8 text-white text-sm sm:text-base md:text-xl md:tracking-widest text-nowrap disabled:opacity-50"
           >
-            <FontAwesomeIcon icon={faMagnifyingGlass} className="sm:mr-2" />{" "}
+            <FontAwesomeIcon icon={faMagnifyingGlass} className="sm:mr-2" />{' '}
             搜索
           </button>
         </div>
       </div>
     </div>
-  );
+  )
 }

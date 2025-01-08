@@ -1,108 +1,109 @@
-"use client";
+'use client'
 
-import { useEffect, useState } from "react";
-import { toast } from "sonner";
+import { useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
+import { toast } from 'sonner'
 
 const quiz = [
   {
-    question: "我能够笑起来和看到事物有趣的一面",
+    question: '我能够笑起来和看到事物有趣的一面',
     answers: [
-      { value: 0, text: "同以前一样" },
-      { value: 1, text: "没有以前那么多" },
-      { value: 2, text: "肯定比以前少" },
-      { value: 3, text: "完全不能" },
+      { value: 0, text: '同以前一样' },
+      { value: 1, text: '没有以前那么多' },
+      { value: 2, text: '肯定比以前少' },
+      { value: 3, text: '完全不能' },
     ],
   },
   {
-    question: "我期待着享受生活",
+    question: '我期待着享受生活',
     answers: [
-      { value: 0, text: "同以前一样" },
-      { value: 1, text: "没有以前那么多" },
-      { value: 2, text: "肯定比以前少" },
-      { value: 3, text: "几乎完全不能" },
+      { value: 0, text: '同以前一样' },
+      { value: 1, text: '没有以前那么多' },
+      { value: 2, text: '肯定比以前少' },
+      { value: 3, text: '几乎完全不能' },
     ],
   },
   {
-    question: "当事情出错时，我会不必要地责备自己",
+    question: '当事情出错时，我会不必要地责备自己',
     answers: [
-      { value: 3, text: "是的，大部分时候会这样" },
-      { value: 2, text: "是的，有时会这样" },
-      { value: 1, text: "不，不经常这样" },
-      { value: 0, text: "不，一点也没有" },
+      { value: 3, text: '是的，大部分时候会这样' },
+      { value: 2, text: '是的，有时会这样' },
+      { value: 1, text: '不，不经常这样' },
+      { value: 0, text: '不，一点也没有' },
     ],
   },
   {
-    question: "我会无缘无故感到焦虑和担心",
+    question: '我会无缘无故感到焦虑和担心',
     answers: [
-      { value: 0, text: "不，一点也没有" },
-      { value: 1, text: "极少这样" },
-      { value: 2, text: "是，有时候这样" },
-      { value: 3, text: "是，经常这样" },
+      { value: 0, text: '不，一点也没有' },
+      { value: 1, text: '极少这样' },
+      { value: 2, text: '是，有时候这样' },
+      { value: 3, text: '是，经常这样' },
     ],
   },
   {
-    question: "我无缘无故感到害怕和惊慌",
+    question: '我无缘无故感到害怕和惊慌',
     answers: [
-      { value: 3, text: "相当多时候这样" },
-      { value: 2, text: "是的，有时候这样" },
-      { value: 1, text: "不经常这样" },
-      { value: 0, text: "一点也没有" },
+      { value: 3, text: '相当多时候这样' },
+      { value: 2, text: '是的，有时候这样' },
+      { value: 1, text: '不经常这样' },
+      { value: 0, text: '一点也没有' },
     ],
   },
   {
-    question: "很多事情冲着我来，使我透不过气",
+    question: '很多事情冲着我来，使我透不过气',
     answers: [
-      { value: 3, text: "是的，大部分时间我根本无法应对" },
-      { value: 2, text: "是的，有时候我不能像往常一样应对" },
-      { value: 1, text: "不，大部分时候我都能应对很好" },
-      { value: 0, text: "不，我能像平时那样应对很好" },
+      { value: 3, text: '是的，大部分时间我根本无法应对' },
+      { value: 2, text: '是的，有时候我不能像往常一样应对' },
+      { value: 1, text: '不，大部分时候我都能应对很好' },
+      { value: 0, text: '不，我能像平时那样应对很好' },
     ],
   },
   {
-    question: "我很不开心，以致难以入睡",
+    question: '我很不开心，以致难以入睡',
     answers: [
-      { value: 3, text: "是的，大部分时候这样" },
-      { value: 2, text: "是的，有时候这样" },
-      { value: 1, text: "不经常这样" },
-      { value: 0, text: "不，一点也没有" },
+      { value: 3, text: '是的，大部分时候这样' },
+      { value: 2, text: '是的，有时候这样' },
+      { value: 1, text: '不经常这样' },
+      { value: 0, text: '不，一点也没有' },
     ],
   },
   {
-    question: "我感到难过和悲伤",
+    question: '我感到难过和悲伤',
     answers: [
-      { value: 3, text: "是的，大部分时间这样" },
-      { value: 2, text: "是的，相当多时候这样" },
-      { value: 1, text: "不经常这样" },
-      { value: 0, text: "一点也没有" },
+      { value: 3, text: '是的，大部分时间这样' },
+      { value: 2, text: '是的，相当多时候这样' },
+      { value: 1, text: '不经常这样' },
+      { value: 0, text: '一点也没有' },
     ],
   },
   {
-    question: "我很不开心一直在哭",
+    question: '我很不开心一直在哭',
     answers: [
-      { value: 3, text: "是的，大部分时候这样" },
-      { value: 2, text: "是的，经常这样" },
-      { value: 1, text: "不经常这样" },
-      { value: 0, text: "一点也没有" },
+      { value: 3, text: '是的，大部分时候这样' },
+      { value: 2, text: '是的，经常这样' },
+      { value: 1, text: '不经常这样' },
+      { value: 0, text: '一点也没有' },
     ],
   },
   {
-    question: "我想到要伤害自己",
+    question: '我想到要伤害自己',
     answers: [
-      { value: 3, text: "是的，经常这样" },
-      { value: 2, text: "有时候这样" },
-      { value: 1, text: "几乎不这样" },
-      { value: 0, text: "一点也没有" },
+      { value: 3, text: '是的，经常这样' },
+      { value: 2, text: '有时候这样' },
+      { value: 1, text: '几乎不这样' },
+      { value: 0, text: '一点也没有' },
     ],
   },
-];
+]
 
 function Answer({ text, choice, onSelectAnswer }) {
   const answerStyle = {
     label: `p-3 px-5 block cursor-pointer rounded-full border border-black border-opacity-20 mb-3 ${
-      choice === text && "bg-[#E9A79B] text-white border-transparent"
+      choice === text && 'bg-[#E9A79B] text-white border-transparent'
     } hover:bg-[#E9A79B] hover:text-slate-100`,
-    text: "ps-3 text-sm sm:text-lg font-normal",
-  };
+    text: 'ps-3 text-sm sm:text-lg font-normal',
+  }
 
   return (
     <div>
@@ -112,17 +113,17 @@ function Answer({ text, choice, onSelectAnswer }) {
           name="answer"
           checked={choice === text}
           onChange={() => {
-            onSelectAnswer(text);
+            onSelectAnswer(text)
           }}
           className="accent-white"
         />
         <span className={answerStyle.text}>{text}</span>
       </label>
     </div>
-  );
+  )
 }
 
-function Result({ totalScore, score10, onReset }) {
+function Result({ totalScore, score10, onReset, onUseAI }) {
   return (
     <div className="w-full">
       <div className="text-center">
@@ -149,44 +150,54 @@ function Result({ totalScore, score10, onReset }) {
         周后重复使用此量表。此量表并不能检测出妈妈的焦虑症、恐慌症或人格障碍。
       </p>
 
-      <button
-        onClick={onReset}
-        className="mx-auto block bg-[#E9A79B] sm:text-lg text-white px-6 sm:px-8 py-2 rounded-full"
-      >
-        重新测试
-      </button>
+      <div className='flex'>
+        <button
+          onClick={onReset}
+          className="mx-auto block bg-slate-400 sm:text-lg text-white px-6 sm:px-8 py-2 rounded-full"
+        >
+          重新测试
+        </button>
+
+        <button
+          onClick={onUseAI}
+          className="mx-auto block bg-[#E9A79B] sm:text-lg text-white px-6 sm:px-8 py-2 rounded-full"
+        >
+          使用AI小智
+        </button>
+      </div>
     </div>
-  );
+  )
 }
 
 function Quizzes() {
-  const [quizNo, setQuizNo] = useState(0);
-  const [choice, setChoice] = useState("");
-  const [chosen, setChosen] = useState([]);
+  const router = useRouter()
+  const [quizNo, setQuizNo] = useState(0)
+  const [choice, setChoice] = useState('')
+  const [chosen, setChosen] = useState([])
 
   useEffect(() => {
     if (chosen.length === 10) {
       fetch(`${process.env.NEXT_PUBLIC_API_URL}/user/profile`, {
-        method: "GET",
+        method: 'GET',
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("user_token")}`,
+          Authorization: `Bearer ${localStorage.getItem('user_token')}`,
         },
       }).then(async (res) => {
-        const data = await res.json();
-        const profile = data.Profile.extra;
+        const data = await res.json()
+        const profile = data.Profile.extra
 
         const qas = chosen.map((answer, i) => {
           return {
             question: quiz[i].question,
             answer,
-          };
-        });
+          }
+        })
 
         fetch(`${process.env.NEXT_PUBLIC_API_URL}/user/profile`, {
-          method: "POST",
+          method: 'POST',
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("user_token")}`,
-            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem('user_token')}`,
+            'Content-Type': 'application/json',
           },
           body: JSON.stringify({
             extra: profile,
@@ -196,9 +207,9 @@ function Quizzes() {
                 (acc, current) =>
                   acc +
                   (quiz[chosen.indexOf(current)].answers.find(
-                    (answer) => answer.text === current
+                    (answer) => answer.text === current,
                   )?.value || 0),
-                0
+                0,
               ),
               score10:
                 quiz[9].answers.find((answer) => answer.text === chosen[9])
@@ -207,39 +218,43 @@ function Quizzes() {
           }),
         }).then((res) => {
           if (res.ok) {
-            toast.info("已上传EDPS结果");
+            toast.info('已上传EDPS结果')
           }
-        });
-      });
+        })
+      })
     }
-  }, [chosen]);
+  }, [chosen])
 
   const onSelectAnswer = (text) => {
-    setChoice(text);
-    setChosen([...chosen, text]);
-  };
+    setChoice(text)
+    setChosen([...chosen, text])
+  }
 
   const onPrevious = () => {
-    setQuizNo(quizNo - 1);
-    setChoice(chosen[quizNo - 1]);
-  };
+    setQuizNo(quizNo - 1)
+    setChoice(chosen[quizNo - 1])
+  }
 
   const onNext = () => {
-    setQuizNo(quizNo + 1);
-    setChoice(chosen[quizNo + 1] ? chosen[quizNo + 1] : "");
-  };
+    setQuizNo(quizNo + 1)
+    setChoice(chosen[quizNo + 1] ? chosen[quizNo + 1] : '')
+  }
 
   const onReset = () => {
-    setQuizNo(0);
-    setChoice("");
-    setChosen([]);
-  };
+    setQuizNo(0)
+    setChoice('')
+    setChosen([])
+  }
+
+  const onUseAI = () => {
+    router.replace('/chat')
+  }
 
   return (
     <div>
       <h1
         className={`${
-          quizNo >= quiz.length ? "hidden" : "block"
+          quizNo >= quiz.length ? 'hidden' : 'block'
         } tracking-widest text-sm sm:text-base my-4 flex justify-between`}
       >
         <span>爱丁堡产后抑郁量表</span>
@@ -273,7 +288,7 @@ function Quizzes() {
             </button>
             <button
               onClick={onNext}
-              disabled={choice === ""}
+              disabled={choice === ''}
               className="bg-[#E9A79B] sm:text-lg font-normal text-slate-100 px-6 sm:px-8 py-2 rounded-full disabled:opacity-40"
             >
               下一题
@@ -286,18 +301,19 @@ function Quizzes() {
             (acc, current) =>
               acc +
               quiz[chosen.indexOf(current)].answers.find(
-                (answer) => answer.text === current
+                (answer) => answer.text === current,
               ).value,
-            0
+            0,
           )}
           score10={
             quiz[9].answers.find((answer) => answer.text === chosen[9]).value
           }
           onReset={onReset}
+          onUseAI={onUseAI}
         />
       )}
     </div>
-  );
+  )
 }
 
 function EDPSPage() {
@@ -307,7 +323,7 @@ function EDPSPage() {
         <Quizzes />
       </div>
     </div>
-  );
+  )
 }
 
-export default EDPSPage;
+export default EDPSPage
