@@ -101,10 +101,22 @@ function Chat() {
     }).then(async (res) => {
       if (!res.ok) {
         router.replace("/login");
+        return;
+      }
+
+      const data = await res.json();
+      const profile = data.Profile;
+
+      if (!profile) {
+        router.replace("/profile");
+        return;
+      }
+      if (!profile.edps) {
+        router.replace("/edps");
+        return;
       }
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [router]);
 
   useEffect(() => {
     if (!params.get("chatId")) {
@@ -122,7 +134,8 @@ function Chat() {
     } else {
       setChatId(params.get("chatId")!);
     }
-  }, [params, router]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [params]);
 
   useEffect(() => {
     if (chatId) {

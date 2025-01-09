@@ -497,8 +497,7 @@ export default function SelectForm() {
         router.replace("/login");
       }
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [router]);
 
   // @ts-expect-error values is array of questions
   function onSubmit(values) {

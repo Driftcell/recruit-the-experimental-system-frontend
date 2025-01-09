@@ -347,8 +347,7 @@ function EDPSPage() {
         router.replace("/login");
       }
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [router]);
 
   return (
     <div className="bg-[#FEF4EB]/[0.3]">
