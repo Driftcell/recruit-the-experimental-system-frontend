@@ -346,6 +346,14 @@ function EDPSPage() {
       if (!res.ok) {
         router.replace("/login");
       }
+
+      const data = await res.json();
+      const profile = data.Profile;
+
+      if (!profile) {
+        router.replace("/profile");
+        return;
+      }
     });
   }, [router]);
 
