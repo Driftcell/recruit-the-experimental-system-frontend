@@ -2,7 +2,11 @@
 
 /* eslint-disable @next/next/no-img-element */
 
-import { faMagnifyingGlass, faUser } from "@fortawesome/free-solid-svg-icons";
+import {
+  faMagnifyingGlass,
+  faSpinner,
+  faUser,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useRef, useState } from "react";
@@ -55,19 +59,18 @@ function ChatDialog({ message, role, isThinking = false }: ChatDialogProps) {
         </div>
 
         <div
-          className={`px-4 min-h-10 whitespace-pre-wrap break-words py-2 sm:py-2.5 sm:px-5 rounded-3xl mx-8 ${
+          className={`flex space-x-2 items-center px-4 min-h-10 whitespace-pre-wrap break-words py-2 sm:py-2.5 sm:px-5 rounded-3xl mx-8 ${
             role === "user"
               ? "rounded-tr-lg bg-[#FDE3D4]"
               : "rounded-tl-lg bg-gray-50 border border-gray-200"
           }`}
         >
-          <Markdown
-            className={`prose break-words prose-sm sm:prose-lg text-gray-800 ${
-              isThinking ? "is-thinking" : ""
-            }`}
-          >
+          <Markdown className="prose break-words prose-sm sm:prose-lg text-gray-800">
             {message}
           </Markdown>
+          {isThinking && (
+            <FontAwesomeIcon icon={faSpinner} className="animate-spin" />
+          )}
         </div>
       </div>
     </div>

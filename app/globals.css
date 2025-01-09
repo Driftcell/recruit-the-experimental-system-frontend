@@ -81,12 +81,3 @@ body {
   unicode-range: U+FF0C, U+FF01, U+0041, U+0049, U+0033, U+0030, U+0035, U+201C, U+201D, U+FF1F;
   src: url('/fonts/Slidexiaxing-Regular.ttf');
 }
-
-.is-thinking *:last-child {
-  @apply inline;
-}
-
-.is-thinking *:last-child::after {
-  content: '';
-  @apply animate-pulse inline-block mb-1 ml-1 w-6 h-6 bg-black rounded-full align-middle;
-}
