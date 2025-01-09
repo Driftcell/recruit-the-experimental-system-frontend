@@ -235,7 +235,7 @@ function Chat() {
         </p>
       </div>
 
-      <div className="mx-10">
+      <div className="mx-4 lg:mx-10">
         {messages
           .filter((message) => message.role !== "system")
           .map((message) => (
@@ -251,7 +251,7 @@ function Chat() {
         )}
       </div>
 
-      <div className="relative mx-8 lg:mx-20 my-4 md:my-8 lg:my-16">
+      <div className="relative mx-4 lg:mx-20 my-4 md:my-8 lg:my-16">
         <img
           src="/chat/xuancao-normal.png"
           alt="decorative"
