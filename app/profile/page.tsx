@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import { Control, FieldValues, useForm } from "react-hook-form";
@@ -24,6 +23,7 @@ import {
 } from "@/components/ui/select";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { useEffect } from "react";
 
 function Name(form: { control: Control<FieldValues> | undefined }) {
   return (
@@ -487,6 +487,19 @@ export default function SelectForm() {
   });
   const router = useRouter();
 
+  useEffect(() => {
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/user/profile`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("user_token")}`,
+      },
+    }).then(async (res) => {
+      if (!res.ok) {
+        router.replace("/login");
+      }
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   // @ts-expect-error values is array of questions
   function onSubmit(values) {
     fetch(`${process.env.NEXT_PUBLIC_API_URL}/user/profile`, {
@@ -513,6 +526,22 @@ export default function SelectForm() {
     });
   }
 
+  const components = [
+    Name,
+    Age,
+    Stage,
+    EmploymentStatus,
+    Country,
+    EducationLevel,
+    MaritalStatus,
+    ChildrenCount,
+    DiagnosedConditions,
+    MedicationUsage,
+    WellbeingSatisfaction,
+    CurrentIssues,
+    DesiredChanges,
+  ];
+
   return (
     <div className="mx-20 mt-10">
       <Form {...form}>
@@ -520,19 +549,10 @@ export default function SelectForm() {
           onSubmit={form.handleSubmit(onSubmit)}
           className="flex flex-col space-y-8"
         >
-          <Name control={form.control} />
-          <Age control={form.control} />
-          <Stage control={form.control} />
-          <EmploymentStatus control={form.control} />
-          <Country control={form.control} />
-          <EducationLevel control={form.control} />
-          <MaritalStatus control={form.control} />
-          <ChildrenCount control={form.control} />
-          <DiagnosedConditions control={form.control} />
-          <MedicationUsage control={form.control} />
-          <WellbeingSatisfaction control={form.control} />
-          <CurrentIssues control={form.control} />
-          <DesiredChanges control={form.control} />
+          {components.map((Component, key) => (
+            // @ts-expect-error We know what we are doing
+            <Component control={form.control} key={key} />
+          ))}
 
           <Button
             className="px-6 py-2 text-center sm:text-lg tracking-wider rounded-full bg-[#E9A79B] hover:bg-[#E9A79B] text-white transition-all duration-300 ease-in-out hover:shadow-xl"
