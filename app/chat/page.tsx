@@ -251,7 +251,7 @@ function Chat() {
         )}
       </div>
 
-      <div className="relative mx-20 my-4 md:my-8 lg:my-16">
+      <div className="relative mx-8 lg:mx-20 my-4 md:my-8 lg:my-16">
         <img
           src="/chat/xuancao-normal.png"
           alt="decorative"

@@ -543,7 +543,7 @@ export default function SelectForm() {
   ];
 
   return (
-    <div className="mx-20 mt-10">
+    <div className="mx-8 lg:mx-20 mt-10">
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
