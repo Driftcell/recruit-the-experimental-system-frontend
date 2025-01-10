@@ -496,8 +496,17 @@ export default function SelectForm() {
       if (!res.ok) {
         router.replace("/login");
       }
+      const data = await res.json();
+      const profile = data.Profile;
+
+      if (profile && profile.edps) {
+        router.replace("/chat");
+      }
+      if (profile && !profile.edps) {
+        router.replace("/edps");
+      }
     });
-  }, [router]);
+  });
 
   // @ts-expect-error values is array of questions
   function onSubmit(values) {
@@ -512,7 +521,7 @@ export default function SelectForm() {
       }),
     }).then(async (res) => {
       if (res.ok) {
-        toast.success("Profile updated successfully");
+        toast.success("已创建个人档案");
         const data = await res.json();
         if (!data.edps) {
           router.push("/edps");
@@ -520,7 +529,7 @@ export default function SelectForm() {
           router.push("/chat");
         }
       } else {
-        toast.error("Failed to update profile");
+        toast.error("更新个人信息失败");
       }
     });
   }

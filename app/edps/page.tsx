@@ -1,5 +1,14 @@
 "use client";
 
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -159,13 +168,8 @@ function Result({
       </div>
 
       <p className="my-4 max-w-3xl mx-auto text-gray-700 sm:text-lg tracking-wide !leading-10 md:!leading-[3rem] lg:!leading-[4rem]">
-        <span className="font-black text-black">
-          得分在 13 分以上的妈妈们很可能在过去的 7 天内正在承受产后抑郁的痛苦。
-        </span>
-        EPDS
-        评分不应该替代临床诊断，明确诊断需要进行更详细的临床评估。此量表仅提示在过去
-        1 周妈妈们的感受。对于可疑病例， 可以在 2
-        周后重复使用此量表。此量表并不能检测出妈妈的焦虑症、恐慌症或人格障碍。
+        EPDS评分不应该替代临床诊断，明确诊断需要进行更详细的临床评估。
+        此量表并不能检测出焦虑症、恐慌症或人格障碍。
       </p>
 
       <div className="flex">
@@ -334,6 +338,26 @@ function Quizzes() {
   );
 }
 
+function Dialog() {
+  return (
+    <AlertDialog defaultOpen>
+      <AlertDialogContent className="max-w-sm rounded-xl">
+        <AlertDialogHeader>
+          <AlertDialogTitle>提示</AlertDialogTitle>
+          <AlertDialogDescription>
+            产后抑郁是非常常见的生育宝宝的并发症。爱丁堡产后抑郁量表是一个快速识别围产期抑郁风险的有效工具。请您根据妈妈最近7天内感受，完成以下10个题目。
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogAction className="bg-[#E9A79B] hover:bg-[#E9A79B] text-white transition-all duration-300 ease-in-out hover:shadow-xl">
+            好的
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  );
+}
+
 function EDPSPage() {
   const router = useRouter();
 
@@ -354,12 +378,18 @@ function EDPSPage() {
         router.replace("/profile");
         return;
       }
+
+      if (profile.edps) {
+        router.replace("/chat");
+        return;
+      }
     });
   }, [router]);
 
   return (
     <div className="bg-[#FEF4EB]/[0.3]">
       <div className="max-w-6xl mx-auto py-16 lg:py-28 px-8 md:px-16 min-h-[calc(100vh-15rem)]">
+        <Dialog />
         <Quizzes />
       </div>
     </div>

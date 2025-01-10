@@ -97,31 +97,6 @@ function Chat() {
   const [currentAnswer, setCurrentAnswer] = useState("");
 
   useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/user/profile`, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("user_token")}`,
-      },
-    }).then(async (res) => {
-      if (!res.ok) {
-        router.replace("/login");
-        return;
-      }
-
-      const data = await res.json();
-      const profile = data.Profile;
-
-      if (!profile) {
-        router.replace("/profile");
-        return;
-      }
-      if (!profile.edps) {
-        router.replace("/edps");
-        return;
-      }
-    });
-  }, [router]);
-
-  useEffect(() => {
     if (!params.get("chatId")) {
       fetch(`${process.env.NEXT_PUBLIC_API_URL}/chat`, {
         method: "POST",
@@ -304,6 +279,25 @@ function Chat() {
 }
 
 export default function ChatPage() {
+  const router = useRouter();
+
+  useEffect(() => {
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/user/profile`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("user_token")}`,
+      },
+    }).then(async (res) => {
+      if (res.ok) {
+        const data = await res.json();
+        if (data.Profile === null) {
+          router.push("/profile");
+        } else if (data.Profile.edps === null) {
+          router.push("/edps");
+        }
+      }
+    });
+  });
+
   return (
     <Suspense>
       <Chat />

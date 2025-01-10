@@ -10,8 +10,8 @@ import { useDebounce } from "use-debounce";
 
 const navLinks = [
   { name: "首页", url: "/" },
-  { name: "爱丁堡产后抑郁量表", url: "/edps" },
   { name: "AI小智", url: "/chat" },
+  { name: "爱丁堡产后抑郁量表", url: "/edps" },
   { name: "个人信息", url: "/profile" },
 ];
 
@@ -20,6 +20,7 @@ export default function Header() {
 
   const [prevScrollY, setPrevScrollY] = useState(0);
   const [diffY, setDiffY] = useState(0);
+  const [showNavLinks, setShowNavLinks] = useState<typeof navLinks>([]);
 
   const pathname = usePathname();
 
@@ -41,6 +42,26 @@ export default function Header() {
     return () => window.removeEventListener("scroll", handleScroll);
   });
 
+  useEffect(() => {
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/user/profile`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("user_token")}`,
+      },
+    }).then(async (res) => {
+      if (res.ok) {
+        const data = await res.json();
+        
+        if (data.Profile === null) {
+          setShowNavLinks(navLinks);
+        } else if (data.Profile.edps === null) {
+          setShowNavLinks(navLinks.slice(0, 3));
+        } else {
+          setShowNavLinks(navLinks.slice(0, 2));
+        }
+      }
+    });
+  });
+
   return (
     <nav
       className="bg-[#E9A79B] sticky top-0 z-50 transition-all duration-300 ease-in-out"
@@ -58,7 +79,7 @@ export default function Header() {
         </Link>
 
         <div className="items-center space-x-8 hidden md:flex">
-          {navLinks.map((link) => (
+          {showNavLinks.map((link) => (
             <Link
               key={link.name}
               href={link.url}
@@ -88,7 +109,7 @@ export default function Header() {
             } ${showMobileMenu ? "scale-y-100" : "scale-y-0 h-0"}
             `}
       >
-        {navLinks.map((link) => (
+        {showNavLinks.map((link) => (
           <Link
             key={link.name}
             href={link.url}
