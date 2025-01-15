@@ -136,6 +136,10 @@ function Chat() {
       socketRef.current.on("error", (error) => {
         setIsLoading(false);
         setCurrentAnswer("");
+        setMessages((prev) => [
+          ...prev,
+          { id: uuidv4(), content: `发生错误：${error}`, role: "assistant" },
+        ]);
         console.error("Error in connection to Socket.IO:", error);
       });
 
