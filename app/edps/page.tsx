@@ -106,6 +106,27 @@ const quiz = [
   },
 ];
 
+function SuicideDialog() {
+  return (
+    <AlertDialog defaultOpen>
+      <AlertDialogContent className="max-w-sm rounded-xl">
+        <AlertDialogHeader>
+          <AlertDialogTitle>紧急提示</AlertDialogTitle>
+          <AlertDialogDescription>
+            如您有自杀倾向，请拨打全国24小时免费心理咨询010-82951332或110（中国大陆）、988（美国/加拿大）
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogAction className="bg-[#E9A79B] hover:bg-[#E9A79B] text-white transition-all duration-300 ease-in-out hover:shadow-xl">
+            我已知晓
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  );
+}
+
+
 function Answer({
   text,
   choice,
@@ -164,7 +185,7 @@ function Result({
         {totalScore >= 10 && (
           <p className="sm:text-xl font-bold my-4">你可能有产后抑郁症</p>
         )}
-        {score10 >= 1 && <p className="sm:text-lg my-4">请注意自杀倾向</p>}
+        {score10 >= 1 && <SuicideDialog />}
       </div>
 
       <p className="my-4 max-w-3xl mx-auto text-gray-700 sm:text-lg tracking-wide !leading-10 md:!leading-[3rem] lg:!leading-[4rem]">
