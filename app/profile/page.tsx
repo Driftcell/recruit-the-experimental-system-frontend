@@ -1,8 +1,8 @@
-"use client";
+'use client'
 
-import { Control, FieldValues, useForm } from "react-hook-form";
+import { Control, FieldValues, useForm } from 'react-hook-form'
 
-import { Button } from "@/components/ui/button";
+import { Button } from '@/components/ui/button'
 import {
   Form,
   FormControl,
@@ -11,19 +11,19 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import MultipleSelector from "@/components/ui/multi-select";
+} from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
+import MultipleSelector from '@/components/ui/multi-select'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
-import { useEffect } from "react";
+} from '@/components/ui/select'
+import { useRouter } from 'next/navigation'
+import { toast } from 'sonner'
+import { useEffect } from 'react'
 
 function Name(form: { control: Control<FieldValues> | undefined }) {
   return (
@@ -41,7 +41,7 @@ function Name(form: { control: Control<FieldValues> | undefined }) {
         </FormItem>
       )}
     />
-  );
+  )
 }
 
 function Age(form: { control: Control<FieldValues> | undefined }) {
@@ -76,7 +76,7 @@ function Age(form: { control: Control<FieldValues> | undefined }) {
         </FormItem>
       )}
     />
-  );
+  )
 }
 
 function Stage(form: { control: Control<FieldValues> | undefined }) {
@@ -108,7 +108,7 @@ function Stage(form: { control: Control<FieldValues> | undefined }) {
         </FormItem>
       )}
     />
-  );
+  )
 }
 
 function EmploymentStatus(form: { control: Control<FieldValues> | undefined }) {
@@ -142,7 +142,7 @@ function EmploymentStatus(form: { control: Control<FieldValues> | undefined }) {
         </FormItem>
       )}
     />
-  );
+  )
 }
 
 function Country(form: { control: Control<FieldValues> | undefined }) {
@@ -174,7 +174,7 @@ function Country(form: { control: Control<FieldValues> | undefined }) {
         </FormItem>
       )}
     />
-  );
+  )
 }
 
 function EducationLevel(form: { control: Control<FieldValues> | undefined }) {
@@ -208,7 +208,7 @@ function EducationLevel(form: { control: Control<FieldValues> | undefined }) {
         </FormItem>
       )}
     />
-  );
+  )
 }
 
 function MaritalStatus(form: { control: Control<FieldValues> | undefined }) {
@@ -241,7 +241,7 @@ function MaritalStatus(form: { control: Control<FieldValues> | undefined }) {
         </FormItem>
       )}
     />
-  );
+  )
 }
 
 function ChildrenCount(form: { control: Control<FieldValues> | undefined }) {
@@ -274,11 +274,11 @@ function ChildrenCount(form: { control: Control<FieldValues> | undefined }) {
         </FormItem>
       )}
     />
-  );
+  )
 }
 
 function DiagnosedConditions(form: {
-  control: Control<FieldValues> | undefined;
+  control: Control<FieldValues> | undefined
 }) {
   return (
     <FormField
@@ -293,15 +293,15 @@ function DiagnosedConditions(form: {
               values={field.value || []}
               onChange={(values) => field.onChange(values)}
               options={[
-                { value: "depression", label: "抑郁症" },
-                { value: "autism", label: "自闭症" },
-                { value: "hearing-speech", label: "听力障碍/言语障碍" },
-                { value: "developmental-disorder", label: "发育障碍" },
+                { value: 'depression', label: '抑郁症' },
+                { value: 'autism', label: '自闭症' },
+                { value: 'hearing-speech', label: '听力障碍/言语障碍' },
+                { value: 'developmental-disorder', label: '发育障碍' },
                 {
-                  value: "pregnancy-complications",
-                  label: "产前并发症/产后并发症/分娩创伤",
+                  value: 'pregnancy-complications',
+                  label: '产前并发症/产后并发症/分娩创伤',
                 },
-                { value: "prefer-not-to-say", label: "有 但不愿回答" },
+                { value: 'prefer-not-to-say', label: '有 但不愿回答' },
               ]}
               placeholder="请选择确诊病史"
               className="border rounded-md"
@@ -313,7 +313,7 @@ function DiagnosedConditions(form: {
         </FormItem>
       )}
     />
-  );
+  )
 }
 
 function MedicationUsage(form: { control: Control<FieldValues> | undefined }) {
@@ -350,7 +350,7 @@ function MedicationUsage(form: { control: Control<FieldValues> | undefined }) {
         </FormItem>
       )}
     />
-  );
+  )
 }
 
 function CurrentIssues(form: { control: Control<FieldValues> | undefined }) {
@@ -367,26 +367,26 @@ function CurrentIssues(form: { control: Control<FieldValues> | undefined }) {
               values={field.value || []}
               onChange={(values) => field.onChange(values)}
               options={[
-                { value: "anxiety", label: "焦虑" },
-                { value: "worry", label: "忧虑" },
-                { value: "low-mood", label: "情绪低落" },
-                { value: "depression", label: "抑郁" },
-                { value: "insomnia", label: "失眠" },
-                { value: "irritability", label: "烦躁" },
-                { value: "anger", label: "易怒" },
-                { value: "stress", label: "压力大" },
-                { value: "lack-of-support", label: "缺乏支持" },
-                { value: "lack-of-exercise", label: "运动不足" },
-                { value: "headache", label: "头疼" },
-                { value: "digestive-issues", label: "肠胃不适" },
-                { value: "low-energy", label: "没有精力" },
-                { value: "poor-focus", label: "注意力不集中" },
-                { value: "no-appetite", label: "没有胃口" },
-                { value: "weight-change", label: "体重剧烈变化" },
-                { value: "fatigue", label: "疲惫" },
-                { value: "disinterest", label: "对生活丧失兴趣" },
-                { value: "low-self-worth", label: "自我价值低" },
-                { value: "guilt", label: "过度愧疚" },
+                { value: 'anxiety', label: '焦虑' },
+                { value: 'worry', label: '忧虑' },
+                { value: 'low-mood', label: '情绪低落' },
+                { value: 'depression', label: '抑郁' },
+                { value: 'insomnia', label: '失眠' },
+                { value: 'irritability', label: '烦躁' },
+                { value: 'anger', label: '易怒' },
+                { value: 'stress', label: '压力大' },
+                { value: 'lack-of-support', label: '缺乏支持' },
+                { value: 'lack-of-exercise', label: '运动不足' },
+                { value: 'headache', label: '头疼' },
+                { value: 'digestive-issues', label: '肠胃不适' },
+                { value: 'low-energy', label: '没有精力' },
+                { value: 'poor-focus', label: '注意力不集中' },
+                { value: 'no-appetite', label: '没有胃口' },
+                { value: 'weight-change', label: '体重剧烈变化' },
+                { value: 'fatigue', label: '疲惫' },
+                { value: 'disinterest', label: '对生活丧失兴趣' },
+                { value: 'low-self-worth', label: '自我价值低' },
+                { value: 'guilt', label: '过度愧疚' },
               ]}
               placeholder="请选择问题"
               className="border rounded-md"
@@ -398,11 +398,11 @@ function CurrentIssues(form: { control: Control<FieldValues> | undefined }) {
         </FormItem>
       )}
     />
-  );
+  )
 }
 
 function WellbeingSatisfaction(form: {
-  control: Control<FieldValues> | undefined;
+  control: Control<FieldValues> | undefined
 }) {
   return (
     <FormField
@@ -432,7 +432,7 @@ function WellbeingSatisfaction(form: {
         </FormItem>
       )}
     />
-  );
+  )
 }
 
 function DesiredChanges(form: { control: Control<FieldValues> | undefined }) {
@@ -449,10 +449,10 @@ function DesiredChanges(form: { control: Control<FieldValues> | undefined }) {
               values={field.value || []}
               onChange={(values) => field.onChange(values)}
               options={[
-                { value: "improve-mood", label: "改善情绪状态" },
-                { value: "improve-habits", label: "改善生活习惯" },
-                { value: "gain-support", label: "获得支持" },
-                { value: "learn-knowledge", label: "学习孕产期知识" },
+                { value: 'improve-mood', label: '改善情绪状态' },
+                { value: 'improve-habits', label: '改善生活习惯' },
+                { value: 'gain-support', label: '获得支持' },
+                { value: 'learn-knowledge', label: '学习孕产期知识' },
               ]}
               placeholder="请选择要改变的内容"
               className="border rounded-md"
@@ -464,74 +464,82 @@ function DesiredChanges(form: { control: Control<FieldValues> | undefined }) {
         </FormItem>
       )}
     />
-  );
+  )
 }
 
 export default function SelectForm() {
   const form = useForm({
     defaultValues: {
-      name: "",
-      age: "",
-      stage: "",
-      employmentStatus: "",
-      country: "",
-      educationLevel: "",
-      maritalStatus: "",
-      childrenCount: "",
+      name: '',
+      age: '',
+      stage: '',
+      employmentStatus: '',
+      country: '',
+      educationLevel: '',
+      maritalStatus: '',
+      childrenCount: '',
       diagnosedConditions: [],
-      medicationUsage: "",
-      wellbeingSatisfaction: "",
+      medicationUsage: '',
+      wellbeingSatisfaction: '',
       currentIssues: [],
       desiredChanges: [],
     },
-  });
-  const router = useRouter();
+  })
+  const router = useRouter()
 
   useEffect(() => {
     fetch(`${process.env.NEXT_PUBLIC_API_URL}/user/profile`, {
       headers: {
-        Authorization: `Bearer ${localStorage.getItem("user_token")}`,
+        Authorization: `Bearer ${localStorage.getItem('user_token')}`,
       },
     }).then(async (res) => {
       if (!res.ok) {
-        router.replace("/login");
+        router.replace('/login')
       }
-      const data = await res.json();
-      const profile = data.Profile;
+      const data = await res.json()
+      const profile = data.Profile
 
       if (profile && profile.edps) {
-        router.replace("/chat");
+        router.replace('/chat')
       }
       if (profile && !profile.edps) {
-        router.replace("/edps");
+        router.replace('/edps')
       }
-    });
-  });
+    })
+  })
 
   // @ts-expect-error values is array of questions
   function onSubmit(values) {
+    if (
+      values.stage === 'pre-pregnancy' &&
+      values.childrenCount === 'pregnancy'
+    ) {
+      toast.error('备孕阶段不能选择孕期孩子数量')
+      return
+    }
+
     fetch(`${process.env.NEXT_PUBLIC_API_URL}/user/profile`, {
-      method: "POST",
+      method: 'POST',
       headers: {
-        Authorization: `Bearer ${localStorage.getItem("user_token")}`,
-        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem('user_token')}`,
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({
         extra: values,
       }),
     }).then(async (res) => {
       if (res.ok) {
-        toast.success("已创建个人档案");
-        const data = await res.json();
+        toast.success('已创建个人档案')
+        const data = await res.json()
         if (!data.edps) {
-          router.push("/edps");
+          router.push('/edps')
         } else {
-          router.push("/chat");
+          router.push('/chat')
         }
       } else {
-        toast.error("更新个人信息失败");
+        toast.error('更新个人信息失败')
       }
-    });
+    })
   }
 
   const components = [
@@ -548,7 +556,7 @@ export default function SelectForm() {
     WellbeingSatisfaction,
     CurrentIssues,
     DesiredChanges,
-  ];
+  ]
 
   return (
     <div className="mx-8 lg:mx-20 mt-10">
@@ -571,5 +579,5 @@ export default function SelectForm() {
         </form>
       </Form>
     </div>
-  );
+  )
 }
