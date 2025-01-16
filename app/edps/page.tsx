@@ -345,7 +345,7 @@ function Dialog() {
         <AlertDialogHeader>
           <AlertDialogTitle>提示</AlertDialogTitle>
           <AlertDialogDescription>
-            产后抑郁是非常常见的生育宝宝的并发症。爱丁堡产后抑郁量表是一个快速识别围产期抑郁风险的有效工具。请您根据妈妈最近7天内感受，完成以下10个题目。
+            产后抑郁是非常常见的生育宝宝的并发症。爱丁堡产后抑郁量表是一个快速识别围产期抑郁风险的有效工具。请您根据最近7天内感受，完成以下10个题目。
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
