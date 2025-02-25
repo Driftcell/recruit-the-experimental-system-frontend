@@ -64,10 +64,10 @@ export default function Header() {
 
   return (
     <nav
-      className="bg-[#E9A79B] sticky top-0 z-50 transition-all duration-300 ease-in-out"
+      className=" bg-[#E9A79B] sticky top-0 z-50 transition-all duration-300 ease-in-out"
       style={{ transform: `translateY(${diffY <= 0 ? "0" : "-100%"})` }}
     >
-      <div className="flex items-end pb-2 justify-between px-6 h-[4.5rem] max-w-6xl mx-auto">
+      <div className="container flex items-end pb-4 justify-between px-6 h-[4.5rem] max-w-6xl mx-auto">
         <Link href="/">
           <img
             src="/logo.png"
