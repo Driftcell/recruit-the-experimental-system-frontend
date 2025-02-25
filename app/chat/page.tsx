@@ -230,6 +230,11 @@ function Chat() {
     });
   };
 
+  const handleNewChat = () => {
+    setShowInput(false)
+    setShowPresetQuestions(true)
+    router.replace("/chat");
+  };
   return (
     <div className="relative overflow-hidden min-h-[80vh] bg-[#FDF5F7]">
       <div className="max-w-6xl mx-auto pt-[20pt]">
@@ -287,7 +292,7 @@ function Chat() {
         <div className="max-w-6xl absolute bottom-4 left-1/2 transform translate-x-[-50%] w-full flex-row flex items-center gap-4">
           <div className="border border-[#F3E0E0] flex flex-row items-center rounded-full bg-white px-2">
             <button
-              onClick={handleMessage}
+              onClick={handleNewChat}
               disabled={isLoading}
               className="flex gap-2 rounded-full py-2 px-4 text-[#E8ADBA] items-center text-sm md:tracking-widest text-nowrap disabled:opacity-50 h-16"
             >
