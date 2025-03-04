@@ -308,6 +308,7 @@ function Chat() {
               placeholder="请说出您的问题"
               className="flex-1 sm:h-12 sm:mx-4 text-sm sm:text-base md:text-lg disabled:opacity-50 focus:outline-none"
               maxLength={100}
+              disabled={isLoading}
               onKeyDown={(e) => {
                 if (e.code === "Enter") {
                   handleMessage();
