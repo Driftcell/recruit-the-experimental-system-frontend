@@ -1,5 +1,6 @@
 "use client";
 
+import { QRCodeDialog } from "@/components/qrcode";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -92,21 +93,11 @@ export default function LoginPage() {
         <CardContent className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="username">用户名</Label>
-            <Input
-              ref={usernameRef}
-              id="username"
-              type="text"
-              required
-            />
+            <Input ref={usernameRef} id="username" type="text" required />
           </div>
           <div className="space-y-2">
             <Label htmlFor="password">密码</Label>
-            <Input
-              ref={passwordRef}
-              id="password"
-              type="password"
-              required
-            />
+            <Input ref={passwordRef} id="password" type="password" required />
           </div>
         </CardContent>
         <CardFooter>
@@ -118,6 +109,7 @@ export default function LoginPage() {
           </Button>
         </CardFooter>
       </Card>
+      <QRCodeDialog />
     </div>
   );
 }

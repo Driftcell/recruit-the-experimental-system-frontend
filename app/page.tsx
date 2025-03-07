@@ -1,10 +1,13 @@
 /* eslint-disable @next/next/no-img-element */
-'use client';
+"use client";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { motion } from "framer-motion";
 import Link from "next/link";
+import { QRCodeDialog } from "@/components/qrcode";
+
+
 
 function Description() {
   const features = [
@@ -54,7 +57,7 @@ function Description() {
       <div className="px-4 md:hidden pb-8">
         <img
           className="w-full"
-          src='/phone-lg.png'
+          src="/phone-lg.png"
           draggable="false"
           loading="lazy"
           alt="hero page image"
@@ -116,7 +119,7 @@ export default function Home() {
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 1 }}
           className="w-full"
-          src='/phone-lg.png'
+          src="/phone-lg.png"
           draggable="false"
           loading="lazy"
           alt="hero page image"
@@ -124,6 +127,7 @@ export default function Home() {
           height="488"
         />
       </div>
+      <QRCodeDialog />
     </div>
   );
 }
