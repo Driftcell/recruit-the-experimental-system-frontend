@@ -1,29 +1,64 @@
 "use client";
 
+import { Card } from "@/components/ui/card";
 /* eslint-disable @next/next/no-img-element */
 
 import { faSpinner, faUser } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useRef, useState } from "react";
 import Markdown from "react-markdown";
 import { io, Socket } from "socket.io-client";
 import { v4 as uuidv4 } from "uuid";
 
+interface ToolProps {
+  name: string;
+  image: string;
+}
+
+function Tool({ name, image }: ToolProps) {
+  return (
+    <div className="bg-white w-[160px] h-[140px] flex flex-col items-center border rounded-lg shadow-md overflow-hidden">
+      <div className="w-full h-[100px] relative overflow-hidden">
+        <Image
+          src={image}
+          alt={name}
+          layout="fill"
+          objectFit="cover"
+          className="rounded-t-lg"
+        />
+      </div>
+      <div className="flex-1 flex items-center justify-center text-sm font-medium p-2 text-center">
+        {name}
+      </div>
+      <a href="#" className="text-center text-[#E8ADBA] text-sm pb-[10px]">
+        试一下
+      </a>
+    </div>
+  );
+}
+
 interface ChatDialogProps {
   message: string;
   role: string;
   isThinking?: boolean;
+  tools: string[];
 }
 
-function ChatDialog({ message, role, isThinking = false }: ChatDialogProps) {
+function ChatDialog({
+  message,
+  role,
+  tools,
+  isThinking = false,
+}: ChatDialogProps) {
   return (
     <div
       className={`flex w-full ${
         role === "user" ? "justify-end" : "justify-start"
       }`}
     >
-      <div>
+      <div className="flex flex-col">
         <div
           className={`flex items-center mb-2 ${
             role === "user" ? "flex-row-reverse" : ""
@@ -64,6 +99,13 @@ function ChatDialog({ message, role, isThinking = false }: ChatDialogProps) {
             )}
           </div>
         </div>
+        {tools.length !== 0 && (
+          <div className="ml-16 flex flex-row gap-3">
+            {tools.map((tool, i) => (
+              <Tool key={tool} name={tool} image={`/tool/${i + 1}.png`} />
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
@@ -91,6 +133,7 @@ interface Message {
   id: string;
   role: string;
   content: string;
+  tools: string[] | undefined;
 }
 
 function Chat() {
@@ -108,6 +151,14 @@ function Chat() {
 
   const [showInput, setShowInput] = useState(false);
   const [showPresetQuestions, setShowPresetQuestions] = useState(true);
+
+  const [loaded, setLoaded] = useState(false);
+
+  const tools = useRef<string[]>([]);
+
+  useEffect(() => {
+    console.log(tools);
+  }, [tools]);
 
   useEffect(() => {
     if (!params.get("chatId")) {
@@ -137,7 +188,15 @@ function Chat() {
       })
         .then((res) => res.json())
         .then((data) => {
-          setMessages(data);
+          setMessages([
+            {
+              id: uuidv4(),
+              content:
+                "Hi~妈妈,我是你的专属智能健康助手小智，今天的心情怎么样？",
+              role: "assistant",
+            },
+            ...data.filter((message: unknown) => message.role !== "tool"),
+          ]);
 
           console.log(data);
 
@@ -145,6 +204,7 @@ function Chat() {
             setShowInput(true);
             setShowPresetQuestions(false);
           }
+          setLoaded(true);
         });
 
       socketRef.current = io(`${process.env.NEXT_PUBLIC_API_URL}/chat`);
@@ -158,7 +218,12 @@ function Chat() {
         setCurrentAnswer("");
         setMessages((prev) => [
           ...prev,
-          { id: uuidv4(), content: `发生错误：${error}`, role: "assistant" },
+          {
+            id: uuidv4(),
+            content: `发生错误：${error}`,
+            role: "assistant",
+            tools: [],
+          },
         ]);
         console.error("Error in connection to Socket.IO:", error);
       });
@@ -169,13 +234,30 @@ function Chat() {
         });
       });
 
+      socketRef.current.on("toolSuggestion", (message) => {
+        console.log(message);
+        tools.current = message.data.tools;
+      });
+
       socketRef.current.on("chatComplete", () => {
         setIsLoading(false);
         setCurrentAnswer((prevAns) => {
-          setMessages((prev) => [
-            ...prev,
-            { id: uuidv4(), content: prevAns, role: "assistant" },
-          ]);
+          setMessages((prev) => {
+            const suggestions = tools.current;
+            tools.current = [];
+            return [
+              ...prev,
+              {
+                id: uuidv4(),
+                content:
+                  tools.current.length !== 0 && prevAns === ""
+                    ? "已为您推荐以下工具"
+                    : prevAns,
+                role: "assistant",
+                tools: suggestions,
+              },
+            ];
+          });
           return "";
         });
       });
@@ -193,7 +275,10 @@ function Chat() {
 
     setShowPresetQuestions(false);
 
-    setMessages([...messages, { id: uuidv4(), role: "user", content: input }]);
+    setMessages([
+      ...messages,
+      { id: uuidv4(), role: "user", content: input, tools: [] },
+    ]);
 
     socketRef.current.emit("startChat", { chatId, message: input });
     setIsLoading(true);
@@ -208,7 +293,7 @@ function Chat() {
     setShowInput(true);
     setMessages([
       ...messages,
-      { id: uuidv4(), role: "user", content: message },
+      { id: uuidv4(), role: "user", content: message, tools: [] },
     ]);
     socketRef.current.emit("insertMessage", {
       chatId,
@@ -221,7 +306,7 @@ function Chat() {
     setShowPresetQuestions(false);
     setMessages([
       ...messages,
-      { id: uuidv4(), role: "assistant", content: question },
+      { id: uuidv4(), role: "assistant", content: question, tools: [] },
     ]);
     socketRef.current?.emit("insertMessage", {
       chatId,
@@ -231,8 +316,8 @@ function Chat() {
   };
 
   const handleNewChat = () => {
-    setShowInput(false)
-    setShowPresetQuestions(true)
+    setShowInput(false);
+    setShowPresetQuestions(true);
     router.replace("/chat");
   };
   return (
@@ -249,16 +334,22 @@ function Chat() {
               role={message.role}
               message={message.content}
               key={message.id}
+              tools={message.tools || []}
             />
           ))}
 
         {isLoading && (
-          <ChatDialog role="assistant" message={currentAnswer} isThinking />
+          <ChatDialog
+            role="assistant"
+            message={currentAnswer}
+            isThinking
+            tools={[]}
+          />
         )}
       </div>
 
       <div className="relative max-w-6xl mx-auto pt-[20pt] mb-20">
-        {!showInput && (
+        {!showInput && loaded && (
           <div className="grid grid-cols-2 gap-4 p-4">
             {moods.map((mood) => (
               <button
@@ -271,7 +362,7 @@ function Chat() {
             ))}
           </div>
         )}
-        {showInput && showPresetQuestions && (
+        {showInput && showPresetQuestions && loaded && (
           <div className="flex flex-col gap-4 p-4">
             <h2 className="text-lg sm:text-xl font-semibold text-gray-800 mb-2">
               从以下几个问题中选择一个开始，或直接聊天：
@@ -288,7 +379,7 @@ function Chat() {
           </div>
         )}
       </div>
-      {showInput && (
+      {showInput && loaded && (
         <div className="max-w-6xl absolute bottom-4 left-1/2 transform translate-x-[-50%] w-full flex-row flex items-center gap-4">
           <div className="border border-[#F3E0E0] flex flex-row items-center rounded-full bg-white px-2">
             <button
