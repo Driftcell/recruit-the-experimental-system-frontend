@@ -6,8 +6,8 @@ import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { QRCodeDialog } from "@/components/qrcode";
-
-
+import { Suspense } from "react";
+import Chat from "@/components/chat";
 
 function Description() {
   const features = [
@@ -57,7 +57,7 @@ function Description() {
       <div className="px-4 md:hidden pb-8">
         <img
           className="w-full"
-          src="/phone-lg.png"
+          src="/phone-lg.jpg"
           draggable="false"
           loading="lazy"
           alt="hero page image"
@@ -110,23 +110,28 @@ function Description() {
 
 export default function Home() {
   return (
-    <div className="max-w-6xl items-center grid-cols-2 mx-auto overflow-x-hidden md:grid md:py-14 min-h-[calc(100vh-4.5rem)]">
-      <Description />
+    <div className="flex flex-col">
+      <div className="max-w-6xl items-center grid-cols-2 mx-auto overflow-x-hidden md:grid md:py-14 min-h-[calc(100vh-4.5rem)]">
+        <Description />
 
-      <div className="hidden md:block my-4 md:pl-[min(6vw,2.5rem)]">
-        <motion.img
-          initial={{ opacity: 0, x: -100 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 1 }}
-          className="w-full"
-          src="/phone-lg.png"
-          draggable="false"
-          loading="lazy"
-          alt="hero page image"
-          width="500"
-          height="488"
-        />
+        <div className="hidden md:block my-4 md:pl-[min(6vw,2.5rem)]">
+          <motion.img
+            initial={{ opacity: 0, x: -100 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 1 }}
+            className="w-full"
+            src="/phone-lg.jpg"
+            draggable="false"
+            loading="lazy"
+            alt="hero page image"
+            width="500"
+            height="488"
+          />
+        </div>
       </div>
+      <Suspense>
+        <Chat />
+      </Suspense>
       <QRCodeDialog />
     </div>
   );

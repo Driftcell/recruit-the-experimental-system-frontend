@@ -1,12 +1,10 @@
 "use client";
-
 /* eslint-disable @next/next/no-img-element */
-
 import { faSpinner, faUser } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
-import { useRouter, useSearchParams } from "next/navigation";
-import { Suspense, useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
 import Markdown from "react-markdown";
 import { io, Socket } from "socket.io-client";
 import { v4 as uuidv4 } from "uuid";
@@ -135,9 +133,8 @@ interface Message {
   tools: string[] | undefined;
 }
 
-function Chat() {
+export default function Chat() {
   const router = useRouter();
-  const params = useSearchParams();
 
   const [messages, setMessages] = useState<Message[]>([]);
   const [chatId, setChatId] = useState("");
@@ -156,23 +153,39 @@ function Chat() {
   const tools = useRef<string[]>([]);
 
   useEffect(() => {
-    if (!params.get("chatId")) {
-      fetch(`${process.env.NEXT_PUBLIC_API_URL}/chat`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("user_token")}`,
-        },
-      }).then(async (res) => {
+    console.log(tools);
+  }, [tools]);
+
+  useEffect(() => {
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        username: "anonymous",
+        password: "anonymous",
+      }),
+    })
+      .then((res) => {
         if (res.ok) {
-          const chat = await res.json();
-          router.replace(`/chat?chatId=${chat.id}`);
+          return res.json();
         }
+      })
+      .then((data) => {
+        fetch(`${process.env.NEXT_PUBLIC_API_URL}/chat`, {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${data.access_token}`,
+          },
+        }).then(async (res) => {
+          if (res.ok) {
+            const chat = await res.json();
+            setChatId(chat.id);
+          }
+        });
       });
-    } else {
-      setChatId(params.get("chatId")!);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [params]);
+  }, []);
 
   useEffect(() => {
     if (chatId) {
@@ -412,32 +425,5 @@ function Chat() {
         </div>
       )}
     </div>
-  );
-}
-
-export default function ChatPage() {
-  const router = useRouter();
-
-  useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/user/profile`, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("user_token")}`,
-      },
-    }).then(async (res) => {
-      if (res.ok) {
-        const data = await res.json();
-        if (data.Profile === null) {
-          router.push("/profile");
-        } else if (data.Profile.edps === null) {
-          router.push("/edps");
-        }
-      }
-    });
-  });
-
-  return (
-    <Suspense>
-      <Chat />
-    </Suspense>
   );
 }

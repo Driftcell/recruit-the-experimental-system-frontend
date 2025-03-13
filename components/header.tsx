@@ -60,7 +60,7 @@ export default function Header() {
         }
       }
     });
-  });
+  }, [pathname]);
 
   return (
     <nav
