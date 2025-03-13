@@ -147,6 +147,7 @@ export default function Chat() {
 
   const [showInput, setShowInput] = useState(false);
   const [showPresetQuestions, setShowPresetQuestions] = useState(true);
+  const [accessToken, setAccessToken] = useState<string | null>(null);
 
   const [loaded, setLoaded] = useState(false);
 
@@ -182,6 +183,7 @@ export default function Chat() {
           if (res.ok) {
             const chat = await res.json();
             setChatId(chat.id);
+            setAccessToken(data.access_token);
           }
         });
       });
@@ -191,7 +193,7 @@ export default function Chat() {
     if (chatId) {
       fetch(`${process.env.NEXT_PUBLIC_API_URL}/chat/messages/${chatId}`, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("user_token")}`,
+          Authorization: `Bearer ${accessToken}`,
         },
       })
         .then((res) => res.json())
